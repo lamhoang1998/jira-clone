@@ -1,5 +1,94 @@
+import { ActionFunction, Form, Link, redirect } from "react-router-dom";
+import { Card } from "antd";
+import { customFetch } from "../services/baseApi";
+import { type ReduxStore } from "../store";
+import { useAppDispatch } from "../hooks";
+import { setToastMessage, setToastState } from "../reducers/toastSlice";
+import { AxiosError } from "axios";
+
+export const action =
+  (store: ReduxStore): ActionFunction =>
+  async ({ request }): Promise<Response | null> => {
+    const formData = await request.formData();
+    const data = Object.fromEntries(formData);
+    try {
+      const res = await customFetch.post("/api/Users/signup", data);
+      const messageSuccess = res.data.message;
+      store.dispatch(
+        setToastMessage({
+          toastState: true,
+          toastMessage: messageSuccess,
+          toastStatus: "SUCCESS",
+        }),
+      );
+      return redirect("/login");
+    } catch (error) {
+      console.log(error);
+      const errorMsg =
+        error instanceof AxiosError
+          ? error.response?.data.message
+          : "Registration Failed";
+      console.log(errorMsg);
+      store.dispatch(
+        setToastMessage({
+          toastState: true,
+          toastMessage: errorMsg,
+          toastStatus: "ERROR",
+        }),
+      );
+      return null;
+    }
+  };
+
 function Register() {
-  return <div>Register</div>;
+  return (
+    <section className="h-screen grid place-items-center ">
+      <Card title="Register" className="w-96 text-center">
+        <Form className="flex flex-col gap-3" method="post">
+          <label htmlFor="username" className="text-left">
+            username
+          </label>
+          <input
+            id="username"
+            type="text"
+            name="username"
+            className="border rounded w-full py-1 px-2 "
+          />
+          <label htmlFor="email" className="text-left">
+            email
+          </label>
+          <input
+            id="email"
+            type="email"
+            name="email"
+            className="border rounded w-full py-1 px-2 "
+          />
+          <label htmlFor="password" className="text-left">
+            password
+          </label>
+          <input
+            id="password"
+            type="password"
+            name="password"
+            className="border rounded w-full py-1 px-2 "
+          />
+          <label htmlFor="phone" className="text-left">
+            phone number
+          </label>
+          <input
+            id="phone"
+            type="text"
+            name="phone"
+            className="border rounded w-full py-1 px-2 "
+          />
+          <button type="submit">Register</button>
+          <p>
+            Already member? <Link to="/login">Login</Link>
+          </p>
+        </Form>
+      </Card>
+    </section>
+  );
 }
 
 export default Register;
