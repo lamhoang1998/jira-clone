@@ -2,8 +2,7 @@ import { ActionFunction, Form, Link, redirect } from "react-router-dom";
 import { Card } from "antd";
 import { customFetch } from "../services/baseApi";
 import { type ReduxStore } from "../store";
-import { useAppDispatch } from "../hooks";
-import { setToastMessage, setToastState } from "../reducers/toastSlice";
+import { setToastMessage } from "../reducers/toastSlice";
 import { AxiosError } from "axios";
 
 export const action =
@@ -23,7 +22,6 @@ export const action =
       );
       return redirect("/login");
     } catch (error) {
-      console.log(error);
       const errorMsg =
         error instanceof AxiosError
           ? error.response?.data.message

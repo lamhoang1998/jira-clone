@@ -7,6 +7,7 @@ import Create from "./pages/Create";
 import User from "./pages/User";
 import ProjectDetails from "./pages/ProjectDetails";
 import { action as registerUser } from "./pages/Register";
+import { action as loginAction } from "./pages/Login";
 import { useAppSelector, useAppDispatch } from "./hooks";
 import Toast from "./components/Toast";
 import { setToastState } from "./reducers/toastSlice";
@@ -36,7 +37,7 @@ function App() {
         { path: "user", element: <User /> },
       ],
     },
-    { path: "/login", element: <Login /> },
+    { path: "/login", element: <Login />, action: loginAction(store) },
     {
       path: "/register",
       element: <Register />,

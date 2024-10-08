@@ -17,7 +17,7 @@ function getUserFromLocalStore(): User | null {
 }
 
 const initialState: UserState = {
-  user: null,
+  user: getUserFromLocalStore(),
 };
 
 const userSlice = createSlice({
@@ -35,5 +35,7 @@ const userSlice = createSlice({
     },
   },
 });
+
+export const { loginUser, logoutUser } = userSlice.actions;
 
 export default userSlice.reducer;
