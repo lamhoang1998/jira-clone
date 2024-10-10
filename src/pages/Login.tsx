@@ -13,19 +13,18 @@ export const action =
     const data = Object.fromEntries(formData);
 
     try {
+      store.dispatch(
+        setToastMessage({
+          toastState: true,
+          toastMessage: "Đăng nhập thành công!",
+          toastStatus: "SUCCESS",
+        }),
+      );
       const res = await customFetch.post("/api/Users/signin", data);
-      console.log(res);
       store.dispatch(
         loginUser({
           userName: res.data.content.email,
           token: res.data.content.accessToken,
-        }),
-      );
-      store.dispatch(
-        setToastMessage({
-          toastState: true,
-          toastMessage: res.data.message,
-          toastStatus: "SUCCESS",
         }),
       );
       return redirect("/");

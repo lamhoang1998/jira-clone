@@ -8,15 +8,10 @@ import User from "./pages/User";
 import ProjectDetails from "./pages/ProjectDetails";
 import { action as registerUser } from "./pages/Register";
 import { action as loginAction } from "./pages/Login";
-import { useAppSelector, useAppDispatch } from "./hooks";
-import Toast from "./components/Toast";
-import { setToastState } from "./reducers/toastSlice";
+
 import { store } from "./store";
 
 function App() {
-  const toast = useAppSelector((store) => store.toastState.toast);
-  const dispatch = useAppDispatch();
-
   const router = createBrowserRouter([
     {
       path: "/",
@@ -44,20 +39,7 @@ function App() {
       action: registerUser(store),
     },
   ]);
-  return (
-    <>
-      {toast.toastState && (
-        <Toast
-          message={toast.toastMessage}
-          type={toast.toastStatus}
-          onClose={() => {
-            dispatch(setToastState());
-          }}
-        />
-      )}
-      <RouterProvider router={router} />;
-    </>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;
