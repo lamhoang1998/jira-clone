@@ -19,5 +19,4 @@ export class baseApi {
 
 export const customFetch = axios.create({
   baseURL: DOMAIN,
-  headers: { tokenCybersoft: TOKEN },
 });

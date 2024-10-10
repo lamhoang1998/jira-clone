@@ -59,11 +59,9 @@ export const fetchProject = createAsyncThunk<
 >("project/fetch", async (_, { rejectWithValue }) => {
   try {
     const res = await customFetch<AllProjects>(url);
-    console.log(res);
 
     return res.data.content;
   } catch (error) {
-    console.log(error);
     const errorMessage =
       error instanceof AxiosError
         ? error.response?.statusText
