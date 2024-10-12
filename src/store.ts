@@ -3,6 +3,7 @@ import globalReducer from "./reducers/globalSlice";
 import projectReducer from "./reducers/projectSlice";
 import userReducer from "./reducers/userSlice";
 import toastReducer from "./reducers/toastSlice";
+import popupReducer from "./reducers/popupSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     projectState: projectReducer,
     userState: userReducer,
     toastState: toastReducer,
+    popupState: popupReducer,
   },
 });
 

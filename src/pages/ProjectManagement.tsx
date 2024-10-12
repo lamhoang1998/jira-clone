@@ -8,6 +8,7 @@ import { Button, Space, Table, Tag } from "antd";
 import Loader from "../components/Loader";
 import ErrorMessage from "../components/ErrorMessage";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { setOpenModal } from "../reducers/popupSlice";
 
 type OnChange = NonNullable<TableProps<ProjectType>["onChange"]>;
 type Filters = Parameters<OnChange>[1];
@@ -170,12 +171,17 @@ function ProjectManagement() {
       key: "action",
       render: (text, record, index) => (
         <Space size="middle">
-          <a>
+          <button
+            className="hover:text-blue-400"
+            onClick={() => {
+              dispatch(setOpenModal());
+            }}
+          >
             <EditOutlined />
-          </a>
-          <a>
+          </button>
+          <button className="hover:text-blue-400">
             <DeleteOutlined />
-          </a>
+          </button>
         </Space>
       ),
     },

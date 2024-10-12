@@ -1,6 +1,7 @@
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { MenuOutlined } from "@ant-design/icons";
+import { MenuOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { setIsSidebarCollapsed } from "../reducers/globalSlice";
+import PopUp from "./PopUp";
 
 function NavBar() {
   const isSidebarCollapsed = useAppSelector(
@@ -20,7 +21,11 @@ function NavBar() {
           <MenuOutlined className="h-8 w-8" />
         </button>
       )}
-      NavBar
+      <div className=" cursor-pointer">
+        <PlusOutlined className="w-8 h-8" />
+        <SearchOutlined className="w-8 h-8" />
+      </div>
+      <h2 className="ml-auto">Navbar</h2>
     </div>
   );
 }
