@@ -20,3 +20,14 @@ export class baseApi {
 export const customFetch = axios.create({
   baseURL: DOMAIN,
 });
+
+const token = localStorage.getItem("user")
+  ? JSON.parse(localStorage.getItem("user") as string).token
+  : "";
+
+export const fetchWithToken = axios.create({
+  baseURL: DOMAIN,
+  headers: {
+    Authorization: "Bearer " + token,
+  },
+});

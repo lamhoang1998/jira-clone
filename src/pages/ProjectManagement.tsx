@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { useEffect } from "react";
-import { fetchProject } from "../reducers/projectSlice";
+import { fetchProject, getProjectDetails } from "../reducers/projectSlice";
 import { useState } from "react";
 import type { TableColumnsType, TableProps } from "antd";
 import { Button, Space, Table, Tag } from "antd";
@@ -174,7 +174,16 @@ function ProjectManagement() {
           <button
             className="hover:text-blue-400"
             onClick={() => {
+              console.log(record);
+              const { categoryName, description, id, projectName } = record;
+              const projectDetails: {
+                id: number;
+                projectName: string;
+                categoryName: string;
+                description: string;
+              } = { id, projectName, categoryName, description };
               dispatch(setOpenModal());
+              dispatch(getProjectDetails(projectDetails));
             }}
           >
             <EditOutlined />
