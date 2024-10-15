@@ -32,12 +32,22 @@ function Create() {
   const projectCategories = useAppSelector(
     (store) => store.projectState.projectCategories,
   );
+
+  const projectCreated = useAppSelector(
+    (store) => store.projectState.projectCreated,
+  );
+
+  useEffect(() => {
+    if (projectCreated) {
+      navigate("/");
+    }
+  }, [projectCreated]);
+
   const error = useAppSelector((store) => store.projectState.error);
   console.log(error);
   const loading = useAppSelector((store) => store.projectState.loading);
 
   const onSubmit = handleSubmit((data: FormCreate) => {
-    console.log(data);
     const dataSubmit: {
       projectName: string;
       description: string;
@@ -46,28 +56,10 @@ function Create() {
     } = {
       projectName: data.projectName,
       description: data.description,
-      categoryId: 0,
+      categoryId: 1,
       alias: "lh",
     };
     dispatch(createProject(dataSubmit));
-    if (!error) {
-      dispatch(
-        setToastMessage({
-          toastState: true,
-          toastMessage: "tạo project thành công!",
-          toastStatus: "SUCCESS",
-        }),
-      );
-      navigate("/");
-    } else {
-      dispatch(
-        setToastMessage({
-          toastState: true,
-          toastMessage: error.errorMessage,
-          toastStatus: "ERROR",
-        }),
-      );
-    }
   });
 
   return (

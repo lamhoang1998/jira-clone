@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { fetchWithToken } from "../services/baseApi";
 import { PayloadAction } from "@reduxjs/toolkit";
 import { AxiosError } from "axios";
-import { store } from "../store";
 import { setCloseModal } from "./popupSlice";
 import { setToastMessage } from "./toastSlice";
 
@@ -45,6 +44,7 @@ export type ProjectDetails = {
 
 export type Contents = {
   contents: Content[];
+  projectCreated: ContentCategoryReturn | null;
   loading: boolean;
   error: Error | null;
   projectDetails: {} | ProjectDetails;
@@ -60,6 +60,7 @@ type Error = {
 
 const initialState: Contents = {
   contents: [],
+  projectCreated: null,
   loading: false,
   error: null,
   projectDetails: {},
@@ -225,15 +226,23 @@ export const createProject = createAsyncThunk<
   CreatorContentReturn,
   CreatorSubmitted,
   { rejectValue: Error }
->("project/create", async (projectCreated, { rejectWithValue }) => {
+>("project/create", async (projectCreated, { rejectWithValue, dispatch }) => {
   try {
     const res = await fetchWithToken.post<CreatorReturn>(
       "/api/Project/createProjectAuthorize",
       projectCreated,
     );
     console.log(res);
+    dispatch(
+      setToastMessage({
+        toastState: true,
+        toastMessage: "successfully updated the projects",
+        toastStatus: "SUCCESS",
+      }),
+    );
     return res.data.content;
   } catch (error) {
+    console.log(error);
     const errorMessage =
       error instanceof AxiosError
         ? error.response?.statusText
@@ -242,6 +251,15 @@ export const createProject = createAsyncThunk<
     const status =
       error instanceof AxiosError ? error.status : "Something went wrong";
     const errorObj = { errorMessage: errorMessage, status: status };
+
+    dispatch(
+      setToastMessage({
+        toastState: true,
+        toastMessage: errorMessage as string,
+        toastStatus: "ERROR",
+      }),
+    );
+
     return rejectWithValue(errorObj as Error);
   }
 });
@@ -308,6 +326,14 @@ const projectSlice = createSlice({
       .addCase(createProject.pending, (state) => {
         state.loading = true;
       })
+      .addCase(
+        createProject.fulfilled,
+        (state, action: PayloadAction<CreatorContentReturn>) => {
+          state.loading = false;
+          state.projectCreated = action.payload;
+          state.error = null;
+        },
+      )
       .addCase(createProject.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
