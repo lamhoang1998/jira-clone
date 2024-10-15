@@ -47,6 +47,7 @@ export type Contents = {
   loading: boolean;
   error: string;
   projectDetails: {} | ProjectDetails;
+  projectCategories: ContentCategory[];
 };
 
 type SucessValue = Content[];
@@ -58,9 +59,12 @@ const initialState: Contents = {
   loading: false,
   error: "",
   projectDetails: {},
+  projectCategories: [],
 };
 
 const url = "/api/Project/getAllProject";
+
+//get all project
 
 export const fetchProject = createAsyncThunk<
   SucessValue,
@@ -105,6 +109,8 @@ type ProjectUpdate = {
   categoryId: string;
 };
 
+//send formdata to the api to update projects
+
 const putUrl = "/api/Project/updateProject";
 
 export const updateProject = createAsyncThunk<
@@ -119,6 +125,89 @@ export const updateProject = createAsyncThunk<
     );
     console.log(res);
 
+    return res.data.content;
+  } catch (error) {
+    console.log(error);
+    const errorMessage =
+      error instanceof AxiosError
+        ? error.response?.statusText
+        : "Something went wrong";
+
+    return rejectWithValue(errorMessage as ErrorMessage);
+  }
+});
+
+// get project category
+
+type ContentCategory = {
+  id: number;
+  projectCategoryName: string;
+};
+
+type ContentCategoryReturn = ContentCategory[];
+
+type CategoryReturn = {
+  statusCode: number;
+  content: ContentCategory[];
+  dateTime: string;
+};
+
+export const fetchProjectCategory = createAsyncThunk<
+  ContentCategoryReturn,
+  void,
+  { rejectValue: ErrorMessage }
+>("project/category", async (_, { rejectWithValue }) => {
+  try {
+    const res = await fetchWithToken.get<CategoryReturn>(
+      "/api/ProjectCategory",
+    );
+    return res.data.content;
+  } catch (error) {
+    const errorMessage =
+      error instanceof AxiosError
+        ? error.response?.statusText
+        : "Something went wrong";
+
+    return rejectWithValue(errorMessage as ErrorMessage);
+  }
+});
+
+//create project authorize
+type CreatorReturn = {
+  statusCode: number;
+  message: string;
+  content: CreatorContentReturn;
+  dateTime: string;
+};
+
+type CreatorContentReturn = {
+  id: number;
+  projectName: string;
+  description: string;
+  categoryId: number;
+  alias: string;
+  deleted: boolean;
+  creator: number;
+};
+
+type CreatorSubmitted = {
+  projectName: string;
+  description: string;
+  categoryId: number;
+  alias: string;
+};
+
+export const createProject = createAsyncThunk<
+  CreatorContentReturn,
+  CreatorSubmitted,
+  { rejectValue: ErrorMessage }
+>("project/create", async (projectCreated, { rejectWithValue }) => {
+  try {
+    const res = await fetchWithToken.post<CreatorReturn>(
+      "/api/Project/createProjectAuthorize",
+      projectCreated,
+    );
+    console.log(res);
     return res.data.content;
   } catch (error) {
     console.log(error);
@@ -164,7 +253,36 @@ const projectSlice = createSlice({
       })
       .addCase(updateProject.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.contents = [];
+        state.error = action.payload;
+      });
+
+    builder
+      .addCase(fetchProjectCategory.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(
+        fetchProjectCategory.fulfilled,
+        (state, action: PayloadAction<ContentCategory[]>) => {
+          state.loading = false;
+          state.projectCategories = action.payload;
+          state.error = "";
+        },
+      )
+      .addCase(
+        fetchProjectCategory.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.projectCategories = [];
+          state.error = action.payload;
+        },
+      );
+
+    builder
+      .addCase(createProject.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(createProject.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
         state.error = action.payload;
       });
   },

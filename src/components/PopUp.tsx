@@ -16,13 +16,6 @@ type ProjectFormData = {
 function PopUp() {
   const dispatch = useAppDispatch();
 
-  const token = localStorage.getItem("user")
-    ? JSON.parse(localStorage.getItem("user") as string).token
-    : "";
-
-  console.log(localStorage.getItem("user"));
-  console.log(token);
-
   const openModal = useAppSelector((store) => store.popupState.open);
   let projectDetails = useAppSelector(
     (store) => store.projectState.projectDetails,
@@ -57,7 +50,6 @@ function PopUp() {
   };
 
   const onSubmit = handleSubmit((data: ProjectFormData) => {
-    console.log(data);
     const dataSubmit: {
       id: number;
       projectName: string;
@@ -71,6 +63,7 @@ function PopUp() {
       description: data.description,
       categoryId: data.projectCategory,
     };
+    console.log(dataSubmit);
     dispatch(updateProject(dataSubmit));
   });
 
