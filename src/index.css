@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.loader {
+  animation: spin 1s linear infinite;
+}

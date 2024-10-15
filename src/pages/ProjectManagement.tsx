@@ -36,7 +36,6 @@ function ProjectManagement() {
   const loading = useAppSelector((store) => store.projectState.loading);
   const error = useAppSelector((store) => store.projectState.error);
   const projects = useAppSelector((store) => store.projectState.contents);
-
   console.log(projects);
 
   const data: DataType[] = [
@@ -216,7 +215,7 @@ function ProjectManagement() {
           />
         </>
       )}
-      {error && <ErrorMessage message={error} />}
+      {error && <ErrorMessage message={error.errorMessage} />}
     </>
   );
 }

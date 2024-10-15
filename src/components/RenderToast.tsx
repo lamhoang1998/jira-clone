@@ -6,6 +6,7 @@ import PopUp from "./PopUp";
 
 function RenderToast({ children }: { children: React.ReactNode }) {
   const toast = useAppSelector((store) => store.toastState.toast);
+  // const loading = useAppSelector((store)=> store.toastState.toast);
   const dispatch = useAppDispatch();
   return (
     <>

@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getProjectApi } from "../services/apiProject";
-import { customFetch, fetchWithToken } from "../services/baseApi";
+import { fetchWithToken } from "../services/baseApi";
 import { PayloadAction } from "@reduxjs/toolkit";
 import { AxiosError } from "axios";
-import { action } from "../pages/Login";
+import { store } from "../store";
+import { setCloseModal } from "./popupSlice";
+import { setToastMessage } from "./toastSlice";
 
 export type AllProjects = {
   statusCode: number;
@@ -45,19 +46,22 @@ export type ProjectDetails = {
 export type Contents = {
   contents: Content[];
   loading: boolean;
-  error: string;
+  error: Error | null;
   projectDetails: {} | ProjectDetails;
   projectCategories: ContentCategory[];
 };
 
 type SucessValue = Content[];
 
-type ErrorMessage = string;
+type Error = {
+  errorMessage: string;
+  status: number;
+};
 
 const initialState: Contents = {
   contents: [],
   loading: false,
-  error: "",
+  error: null,
   projectDetails: {},
   projectCategories: [],
 };
@@ -69,18 +73,21 @@ const url = "/api/Project/getAllProject";
 export const fetchProject = createAsyncThunk<
   SucessValue,
   void,
-  { rejectValue: ErrorMessage }
+  { rejectValue: Error }
 >("project/fetch", async (_, { rejectWithValue }) => {
   try {
     const res = await fetchWithToken.get<AllProjects>(url);
-
     return res.data.content;
   } catch (error) {
     const errorMessage =
       error instanceof AxiosError
         ? error.response?.statusText
         : "Something went wrong";
-    return rejectWithValue(errorMessage as ErrorMessage);
+
+    const status =
+      error instanceof AxiosError ? error.status : "Something went wrong";
+    const errorObj = { errorMessage: errorMessage, status: status };
+    return rejectWithValue(errorObj as Error);
   }
 });
 
@@ -106,7 +113,7 @@ type ProjectUpdate = {
   projectName: string;
   creator: number;
   description: string;
-  categoryId: string;
+  categoryId: number;
 };
 
 //send formdata to the api to update projects
@@ -116,15 +123,15 @@ const putUrl = "/api/Project/updateProject";
 export const updateProject = createAsyncThunk<
   ProjectSentBack,
   ProjectUpdate,
-  { rejectValue: ErrorMessage }
->("project/update ", async (projectDetails, { rejectWithValue }) => {
+  { rejectValue: Error }
+>("project/update ", async (projectDetails, { rejectWithValue, dispatch }) => {
   try {
     const res = await fetchWithToken.put<PutData>(
       `/api/Project/updateProject?projectId=${projectDetails.id}`,
       projectDetails,
     );
-    console.log(res);
-
+    dispatch(setCloseModal());
+    dispatch(fetchProject());
     return res.data.content;
   } catch (error) {
     console.log(error);
@@ -133,7 +140,21 @@ export const updateProject = createAsyncThunk<
         ? error.response?.statusText
         : "Something went wrong";
 
-    return rejectWithValue(errorMessage as ErrorMessage);
+    const status =
+      error instanceof AxiosError ? error.status : "Something went wrong";
+    const errorObj = { errorMessage: errorMessage, status: status };
+
+    dispatch(setCloseModal());
+
+    dispatch(
+      setToastMessage({
+        toastState: true,
+        toastMessage: errorMessage as string,
+        toastStatus: "ERROR",
+      }),
+    );
+
+    return rejectWithValue(errorObj as Error);
   }
 });
 
@@ -155,7 +176,7 @@ type CategoryReturn = {
 export const fetchProjectCategory = createAsyncThunk<
   ContentCategoryReturn,
   void,
-  { rejectValue: ErrorMessage }
+  { rejectValue: Error }
 >("project/category", async (_, { rejectWithValue }) => {
   try {
     const res = await fetchWithToken.get<CategoryReturn>(
@@ -168,7 +189,10 @@ export const fetchProjectCategory = createAsyncThunk<
         ? error.response?.statusText
         : "Something went wrong";
 
-    return rejectWithValue(errorMessage as ErrorMessage);
+    const status =
+      error instanceof AxiosError ? error.status : "Something went wrong";
+    const errorObj = { errorMessage: errorMessage, status: status };
+    return rejectWithValue(errorObj as Error);
   }
 });
 
@@ -200,7 +224,7 @@ type CreatorSubmitted = {
 export const createProject = createAsyncThunk<
   CreatorContentReturn,
   CreatorSubmitted,
-  { rejectValue: ErrorMessage }
+  { rejectValue: Error }
 >("project/create", async (projectCreated, { rejectWithValue }) => {
   try {
     const res = await fetchWithToken.post<CreatorReturn>(
@@ -210,13 +234,15 @@ export const createProject = createAsyncThunk<
     console.log(res);
     return res.data.content;
   } catch (error) {
-    console.log(error);
     const errorMessage =
       error instanceof AxiosError
         ? error.response?.statusText
         : "Something went wrong";
 
-    return rejectWithValue(errorMessage as ErrorMessage);
+    const status =
+      error instanceof AxiosError ? error.status : "Something went wrong";
+    const errorObj = { errorMessage: errorMessage, status: status };
+    return rejectWithValue(errorObj as Error);
   }
 });
 
@@ -238,7 +264,7 @@ const projectSlice = createSlice({
         (state, action: PayloadAction<Content[]>) => {
           state.loading = false;
           state.contents = action.payload;
-          state.error = "";
+          state.error = null;
         },
       )
       .addCase(fetchProject.rejected, (state, action: PayloadAction<any>) => {
@@ -253,6 +279,7 @@ const projectSlice = createSlice({
       })
       .addCase(updateProject.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
+        state.contents = [];
         state.error = action.payload;
       });
 
@@ -265,7 +292,7 @@ const projectSlice = createSlice({
         (state, action: PayloadAction<ContentCategory[]>) => {
           state.loading = false;
           state.projectCategories = action.payload;
-          state.error = "";
+          state.error = null;
         },
       )
       .addCase(
