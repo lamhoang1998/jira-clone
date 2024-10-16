@@ -2,7 +2,11 @@ import { Editor } from "@tinymce/tinymce-react";
 import { useForm, Controller } from "react-hook-form";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { createProject, fetchProjectCategory } from "../reducers/projectSlice";
+import {
+  createProject,
+  fetchProjectCategory,
+  setProjectCreated,
+} from "../reducers/projectSlice";
 import { setToastMessage } from "../reducers/toastSlice";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
@@ -41,6 +45,7 @@ function Create() {
     if (projectCreated) {
       navigate("/");
     }
+    dispatch(setProjectCreated());
   }, [projectCreated]);
 
   const error = useAppSelector((store) => store.projectState.error);
@@ -57,7 +62,7 @@ function Create() {
       projectName: data.projectName,
       description: data.description,
       categoryId: 1,
-      alias: "lh",
+      alias: data.projectCategory,
     };
     dispatch(createProject(dataSubmit));
   });

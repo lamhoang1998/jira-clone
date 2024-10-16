@@ -21,7 +21,6 @@ export const action =
         }),
       );
       const res = await customFetch.post("/api/Users/signin", data);
-      console.log(res);
       store.dispatch(
         loginUser({
           userName: res.data.content.email,

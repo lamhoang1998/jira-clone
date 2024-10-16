@@ -4,6 +4,7 @@ import projectReducer from "./reducers/projectSlice";
 import userReducer from "./reducers/userSlice";
 import toastReducer from "./reducers/toastSlice";
 import popupReducer from "./reducers/popupSlice";
+import membersReducers from "./reducers/membersSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     userState: userReducer,
     toastState: toastReducer,
     popupState: popupReducer,
+    membersState: membersReducers,
   },
 });
 

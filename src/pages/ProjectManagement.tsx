@@ -1,14 +1,15 @@
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { fetchProject, getProjectDetails } from "../reducers/projectSlice";
-import { useState } from "react";
 import type { TableColumnsType, TableProps } from "antd";
-import { Button, Space, Table, Tag } from "antd";
+import { Space, Table, Tag, Avatar, Popover, Button, AutoComplete } from "antd";
 
 import Loader from "../components/Loader";
 import ErrorMessage from "../components/ErrorMessage";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { setOpenModal } from "../reducers/popupSlice";
+import { addMember, fetchMembers } from "../reducers/membersSlice";
+import { current } from "@reduxjs/toolkit";
 
 type OnChange = NonNullable<TableProps<ProjectType>["onChange"]>;
 type Filters = Parameters<OnChange>[1];
@@ -23,12 +24,15 @@ interface DataType {
   address: string;
 }
 
+type Members = { userId: number; name: string; avatar: string };
+
 interface ProjectType {
   id: number;
   projectName: string;
   description: string;
   categoryName: string;
   creator: { id: number; name: string };
+  members: Members[];
 }
 
 function ProjectManagement() {
@@ -36,7 +40,11 @@ function ProjectManagement() {
   const loading = useAppSelector((store) => store.projectState.loading);
   const error = useAppSelector((store) => store.projectState.error);
   const projects = useAppSelector((store) => store.projectState.contents);
-  console.log(projects);
+  const members = useAppSelector((store) => store.membersState.members);
+
+  const [member, setMember] = useState<string>("");
+
+  const [page, setPage] = useState<number>(1);
 
   const data: DataType[] = [
     {
@@ -65,30 +73,12 @@ function ProjectManagement() {
     },
   ];
 
-  const [filteredInfo, setFilteredInfo] = useState<Filters>({});
-  const [sortedInfo, setSortedInfo] = useState<Sorts>({});
-
   const handleChange: OnChange = (pagination, filters, sorter) => {
-    console.log("Various parameters", pagination, filters, sorter);
-    setFilteredInfo(filters);
-    setSortedInfo(sorter as Sorts);
+    console.log("pagination", pagination);
+    setPage(pagination.current as number);
   };
 
-  const clearFilters = () => {
-    setFilteredInfo({});
-  };
-
-  const clearAll = () => {
-    setFilteredInfo({});
-    setSortedInfo({});
-  };
-
-  const setAgeSort = () => {
-    setSortedInfo({
-      order: "descend",
-      columnKey: "age",
-    });
-  };
+  console.log(page);
 
   const columns: TableColumnsType<ProjectType> = [
     {
@@ -121,20 +111,12 @@ function ProjectManagement() {
         return 1;
       },
     },
-    {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
-      // filters: [
-      //   { text: "London", value: "London" },
-      //   { text: "New York", value: "New York" },
-      // ],
-      // filteredValue: filteredInfo.address || null,
-      // onFilter: (value, record) => record.address.includes(value as string),
-      // sorter: (a, b) => a.address.length - b.address.length,
-      // sortOrder: sortedInfo.columnKey === "address" ? sortedInfo.order : null,
-      // ellipsis: true,
-    },
+    // {
+    //   title: "Description",
+    //   dataIndex: "description",
+    //   key: "description",
+
+    // },
     {
       title: "category",
       dataIndex: "categoryName",
@@ -162,6 +144,61 @@ function ProjectManagement() {
           return -1;
         }
         return 1;
+      },
+    },
+
+    {
+      title: "member",
+      dataIndex: "member",
+      key: "member",
+      render: (text, record, index) => {
+        return (
+          <div>
+            {record.members
+              ?.slice(0.3)
+              .map((member) => (
+                <Avatar
+                  key={member.userId}
+                  src={member.avatar}
+                  className="bg-orange-500 text-orange-500"
+                />
+              ))}
+            {record.members?.length > 3 ? <Avatar>...</Avatar> : ""}
+            <Popover
+              placement="topLeft"
+              title="add members"
+              content={() => (
+                <div>
+                  <AutoComplete
+                    className="w-full"
+                    value={member}
+                    onChange={(text) => {
+                      setMember(text);
+                    }}
+                    options={members?.map((member) => {
+                      return { label: member.name, value: member.userId };
+                    })}
+                    onSelect={(value, option) => {
+                      setMember(option.label);
+                      console.log(record.id, option.value);
+                      dispatch(
+                        addMember({
+                          projectId: record.id,
+                          userId: option.value,
+                        }),
+                      );
+                    }}
+                    onSearch={(value: string) => {
+                      dispatch(fetchMembers(value));
+                    }}
+                  />
+                </div>
+              )}
+            >
+              <Button>+</Button>
+            </Popover>
+          </div>
+        );
       },
     },
 
@@ -203,15 +240,11 @@ function ProjectManagement() {
       {loading && <Loader />}
       {!loading && !error && (
         <>
-          <Space style={{ marginBottom: 16 }} className="ml-3 sm:ml-64 md:ml-1">
-            <Button onClick={setAgeSort}>Sort age</Button>
-            <Button onClick={clearFilters}>Clear filters</Button>
-            <Button onClick={clearAll}>Clear filters and sorters</Button>
-          </Space>
           <Table<ProjectType>
             columns={columns}
             dataSource={projects}
             onChange={handleChange}
+            pagination={{ current: page }}
           />
         </>
       )}

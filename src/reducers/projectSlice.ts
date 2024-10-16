@@ -271,6 +271,9 @@ const projectSlice = createSlice({
     getProjectDetails: (state, action) => {
       state.projectDetails = action.payload;
     },
+    setProjectCreated: (state) => {
+      state.projectCreated = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -326,14 +329,11 @@ const projectSlice = createSlice({
       .addCase(createProject.pending, (state) => {
         state.loading = true;
       })
-      .addCase(
-        createProject.fulfilled,
-        (state, action: PayloadAction<CreatorContentReturn>) => {
-          state.loading = false;
-          state.projectCreated = action.payload;
-          state.error = null;
-        },
-      )
+      .addCase(createProject.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.projectCreated = action.payload;
+        state.error = null;
+      })
       .addCase(createProject.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
@@ -341,6 +341,6 @@ const projectSlice = createSlice({
   },
 });
 
-export const { getProjectDetails } = projectSlice.actions;
+export const { getProjectDetails, setProjectCreated } = projectSlice.actions;
 
 export default projectSlice.reducer;

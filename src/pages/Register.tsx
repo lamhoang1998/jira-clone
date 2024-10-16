@@ -10,6 +10,7 @@ export const action =
   async ({ request }): Promise<Response | null> => {
     const formData = await request.formData();
     const data = Object.fromEntries(formData);
+    console.log(data);
     try {
       const res = await customFetch.post("/api/Users/signup", data);
       const messageSuccess = res.data.message;
@@ -43,15 +44,6 @@ function Register() {
     <section className="h-screen grid place-items-center ">
       <Card title="Register" className="w-96 text-center">
         <Form className="flex flex-col gap-3" method="post">
-          <label htmlFor="username" className="text-left">
-            username
-          </label>
-          <input
-            id="username"
-            type="text"
-            name="username"
-            className="border rounded w-full py-1 px-2 "
-          />
           <label htmlFor="email" className="text-left">
             email
           </label>
@@ -70,13 +62,23 @@ function Register() {
             name="password"
             className="border rounded w-full py-1 px-2 "
           />
+          <label htmlFor="username" className="text-left">
+            name
+          </label>
+          <input
+            id="name"
+            type="text"
+            name="name"
+            className="border rounded w-full py-1 px-2 "
+          />
+
           <label htmlFor="phone" className="text-left">
             phone number
           </label>
           <input
             id="phone"
             type="text"
-            name="phone"
+            name="phoneNumber"
             className="border rounded w-full py-1 px-2 "
           />
           <button type="submit">Register</button>
