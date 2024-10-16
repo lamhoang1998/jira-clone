@@ -53,6 +53,11 @@ function Create() {
   const loading = useAppSelector((store) => store.projectState.loading);
 
   const onSubmit = handleSubmit((data: FormCreate) => {
+    let categoryId = 0;
+    projectCategories.forEach((category) => {
+      if (category.projectCategoryName === data.projectCategory)
+        categoryId = category.id;
+    });
     const dataSubmit: {
       projectName: string;
       description: string;
@@ -61,9 +66,10 @@ function Create() {
     } = {
       projectName: data.projectName,
       description: data.description,
-      categoryId: 1,
+      categoryId: categoryId,
       alias: data.projectCategory,
     };
+    console.log(dataSubmit);
     dispatch(createProject(dataSubmit));
   });
 

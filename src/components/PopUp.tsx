@@ -22,13 +22,6 @@ type ProjectFormData = {
 function PopUp() {
   const dispatch = useAppDispatch();
 
-  type Error = {
-    errorMessage: string;
-    status: number;
-  };
-
-  const [err, setErr] = useState<Error | null>(null);
-
   const openModal = useAppSelector((store) => store.popupState.open);
   const projectDetails = useAppSelector(
     (store) => store.projectState.projectDetails,
@@ -38,8 +31,9 @@ function PopUp() {
   const error = useAppSelector((store) => store.projectState.error);
   console.log(`error:${error?.errorMessage}`, `errorStatus: ${error?.status}`);
 
-  const success = error ? false : true;
-  console.log(success);
+  const projectCategories = useAppSelector(
+    (store) => store.projectState.projectCategories,
+  );
 
   const formDetails = useForm<ProjectFormData>({});
 
@@ -64,7 +58,11 @@ function PopUp() {
   );
 
   const onSubmit = handleSubmit(async (data: ProjectFormData) => {
-    console.log(data);
+    let categoryId = 0;
+    projectCategories.forEach((category) => {
+      if (category.projectCategoryName === data.projectCategory)
+        categoryId = category.id;
+    });
     const dataSubmit: {
       id: number;
       projectName: string;
@@ -76,12 +74,10 @@ function PopUp() {
       projectName: data.projectName,
       creator: 0,
       description: data.description,
-      categoryId: 1,
+      categoryId: categoryId,
     };
 
     await dispatch(updateProject(dataSubmit));
-    console.log(`error in submit : ${error?.errorMessage}`);
-    console.log(success);
   });
 
   return (
@@ -131,11 +127,11 @@ function PopUp() {
               <option value="" className="text-sm font-bold">
                 Choose a project
               </option>
-              {["Dự án phần mềm", "Dự án web", "Dự án di động"].map(
-                (project) => (
-                  <option value={project}>{project}</option>
-                ),
-              )}
+              {projectCategories.map((project) => (
+                <option value={project.projectCategoryName} key={project.id}>
+                  {project.projectCategoryName}
+                </option>
+              ))}
             </select>
             {errors.projectCategory && (
               <span className="text-red-500">
