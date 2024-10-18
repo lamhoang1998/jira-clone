@@ -4,7 +4,7 @@ import {
   TeamOutlined,
   ToolFilled,
 } from "@ant-design/icons";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { setIsSidebarCollapsed } from "../reducers/globalSlice";
@@ -16,10 +16,11 @@ function SideBar() {
   const isSidebarCollapsed = useAppSelector(
     (store) => store.globalState.isSidebarCollapsed,
   );
+  console.log("isSidebarCollapsed", isSidebarCollapsed);
 
   const dispatch = useAppDispatch();
 
-  const sidebarClassName = `fixed flex flex-col h-[100%] justify-between shadow-xl translation-all duration-300 h-full z-40 overflow-y-auto bg-white w-64 md:w-64 ${isSidebarCollapsed ? `w-0 hidden` : ""}`;
+  const sidebarClassName = `fixed flex flex-col h-[100%] justify-between shadow-xl translation-all duration-300 h-full z-40 overflow-y-auto bg-white w-0 md:w-64 hidden md:block ${isSidebarCollapsed ? `w-0 hidden md:hidden` : ""}`;
 
   const activeClass =
     "w-ful relative flex cursor-pointer items-center gap-3 transition-colors hover:bg-gray-100 bg-gray-100 text-white p-2";
@@ -27,6 +28,9 @@ function SideBar() {
   const normalClass =
     "w-full relative flex cursor-pointer items-center gap-3 transition-colors hover:bg-gray-100 p-2";
 
+  useEffect(() => {
+    window.addEventListener("resize", () => {});
+  }, []);
   return (
     <div className={sidebarClassName}>
       <div className="flex h-[100%] w-full flex-col justify-start">

@@ -28,9 +28,6 @@ function PopUp() {
   ) as ProjectDetails;
   const { id, projectName, categoryName, description } = projectDetails;
 
-  const error = useAppSelector((store) => store.projectState.error);
-  console.log(`error:${error?.errorMessage}`, `errorStatus: ${error?.status}`);
-
   const projectCategories = useAppSelector(
     (store) => store.projectState.projectCategories,
   );

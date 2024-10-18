@@ -1,7 +1,6 @@
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { MenuOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { setIsSidebarCollapsed } from "../reducers/globalSlice";
-import PopUp from "./PopUp";
 
 function NavBar() {
   const isSidebarCollapsed = useAppSelector(
