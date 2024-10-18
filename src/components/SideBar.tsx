@@ -20,7 +20,7 @@ function SideBar() {
 
   const dispatch = useAppDispatch();
 
-  const sidebarClassName = `fixed flex flex-col h-[100%] justify-between shadow-xl translation-all duration-300 h-full z-40 overflow-y-auto bg-white w-0 md:w-64 hidden md:block ${isSidebarCollapsed ? `w-0 hidden md:hidden` : ""}`;
+  const sidebarClassName = `fixed flex flex-col h-[100%] justify-between shadow-xl translation-all duration-300 h-full z-40 overflow-y-auto bg-white w-64 md:w-64  ${isSidebarCollapsed ? `w-0 hidden` : ""}`;
 
   const activeClass =
     "w-ful relative flex cursor-pointer items-center gap-3 transition-colors hover:bg-gray-100 bg-gray-100 text-white p-2";

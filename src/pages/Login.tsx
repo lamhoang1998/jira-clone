@@ -112,11 +112,7 @@ function Login() {
             name="password"
             className="border rounded w-full py-1 px-2 "
           />
-          {errors?.password === "" && (
-            <span className="text-red-500 text-left">
-              please enter your password
-            </span>
-          )}
+
           {errors?.password && (
             <span className="text-red-500 text-left">{errors?.password}</span>
           )}
