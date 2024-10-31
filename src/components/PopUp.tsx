@@ -9,8 +9,6 @@ import {
   ProjectDetails,
   updateProject,
 } from "../reducers/projectSlice";
-import ErrorMessage from "./ErrorMessage";
-import { setToastMessage } from "../reducers/toastSlice";
 
 type ProjectFormData = {
   projectId: number;
@@ -22,15 +20,19 @@ type ProjectFormData = {
 function PopUp() {
   const dispatch = useAppDispatch();
 
-  const openModal = useAppSelector((store) => store.popupState.open);
+  const openModal = useAppSelector((store) => store.popupState.openEditProject);
   const projectDetails = useAppSelector(
     (store) => store.projectState.projectDetails,
   ) as ProjectDetails;
   const { id, projectName, categoryName, description } = projectDetails;
 
+  console.log(projectDetails);
+
   const projectCategories = useAppSelector(
     (store) => store.projectState.projectCategories,
   );
+
+  console.log(projectCategories);
 
   const formDetails = useForm<ProjectFormData>({});
 
@@ -80,14 +82,15 @@ function PopUp() {
   return (
     <>
       <Modal
-        title={<p>Loading Modal</p>}
+        title={<h2 className="text-3xl font-bold">Edit projects</h2>}
         open={openModal}
         onCancel={() => {
           dispatch(setCloseModal());
         }}
+        okButtonProps={{ style: { display: "none" } }}
+        cancelButtonProps={{ style: { display: "none" } }}
       >
         <form className="flex flex-col gap-5" onSubmit={onSubmit}>
-          <h2 className="text-3xl font-bold">Create an Account</h2>
           <label className="text-gray-700 text-sm font-bold flex-1">
             Project Id
             <input
@@ -145,7 +148,7 @@ function PopUp() {
               render={({ field: { onChange, onBlur, value } }) => (
                 <Editor
                   apiKey="w1t07959btha8whcoqneja1m0pxjy5k1p38pv95jt3ywz6l3"
-                  initialValue=""
+                  initialValue={description}
                   init={{
                     height: 200,
                     menubar: false,

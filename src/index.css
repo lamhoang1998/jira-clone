@@ -5,3 +5,7 @@
 .loader {
   animation: spin 1s linear infinite;
 }
+
+.body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}

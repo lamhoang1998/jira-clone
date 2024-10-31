@@ -1,15 +1,25 @@
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { useEffect, useState } from "react";
-import { fetchProject, getProjectDetails } from "../reducers/projectSlice";
+import {
+  deleteProject,
+  fetchProject,
+  fetchProjectCategory,
+  getProjectDetails,
+} from "../reducers/projectSlice";
 import type { TableColumnsType, TableProps } from "antd";
 import { Space, Table, Tag, Avatar, Popover, Button, AutoComplete } from "antd";
 
 import Loader from "../components/Loader";
 import ErrorMessage from "../components/ErrorMessage";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { CloseOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { setOpenModal } from "../reducers/popupSlice";
-import { addMember, fetchMembers } from "../reducers/membersSlice";
+import {
+  addMember,
+  fetchMembers,
+  removeMember,
+} from "../reducers/membersSlice";
 import { current } from "@reduxjs/toolkit";
+import { NavLink } from "react-router-dom";
 
 type OnChange = NonNullable<TableProps<ProjectType>["onChange"]>;
 type Filters = Parameters<OnChange>[1];
@@ -102,6 +112,11 @@ function ProjectManagement() {
       // sorter: (a, b) => a.age - b.age,
       // sortOrder: sortedInfo.columnKey === "age" ? sortedInfo.order : null,
       // ellipsis: true,
+      render: (text, record, index) => {
+        return (
+          <NavLink to={`project/${record.id}`}>{record.projectName}</NavLink>
+        );
+      },
       sorter: (item2, item1) => {
         let projectName1 = item1.projectName?.trim().toLowerCase();
         let projectName2 = item2.projectName?.trim().toLowerCase();
@@ -152,18 +167,68 @@ function ProjectManagement() {
       dataIndex: "member",
       key: "member",
       render: (text, record, index) => {
+        console.log(record.members);
         return (
           <div>
-            {record.members
-              ?.slice(0.3)
-              .map((member) => (
+            {record.members?.slice(0.3).map((member) => (
+              <Popover
+                placement="top"
+                title="members"
+                content={() => {
+                  return (
+                    <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                      <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                          <th>Id</th>
+                          <th>Avatar</th>
+                          <th>Name</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {record.members?.map((member) => (
+                          <tr key={member.userId}>
+                            <td>{member.userId}</td>
+                            <td>
+                              <img
+                                src={member.avatar}
+                                className="w-[20px] h-[20px]"
+                              />
+                            </td>
+                            <td>{member.name}</td>
+                            <td>
+                              <button
+                                className="bg-orange-600 p-2 rounded-sm text-gray-200"
+                                onClick={() =>
+                                  dispatch(
+                                    removeMember({
+                                      projectId: record.id,
+                                      userId: member.userId,
+                                    }),
+                                  )
+                                }
+                              >
+                                delete
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  );
+                }}
+              >
                 <Avatar
                   key={member.userId}
                   src={member.avatar}
-                  className="bg-orange-500 text-orange-500"
+                  className="bg-orange-500 text-orange-500 ml-[-8px]"
                 />
-              ))}
-            {record.members?.length > 3 ? <Avatar>...</Avatar> : ""}
+              </Popover>
+            ))}
+            {record.members?.length > 3 ? (
+              <Avatar className="ml-[-8px]">...</Avatar>
+            ) : (
+              ""
+            )}
             <Popover
               placement="topLeft"
               title="add members"
@@ -224,7 +289,12 @@ function ProjectManagement() {
           >
             <EditOutlined />
           </button>
-          <button className="hover:text-blue-400">
+          <button
+            className="hover:text-blue-400"
+            onClick={() => {
+              dispatch(deleteProject(record.id));
+            }}
+          >
             <DeleteOutlined />
           </button>
         </Space>
@@ -234,6 +304,10 @@ function ProjectManagement() {
 
   useEffect(function () {
     dispatch(fetchProject());
+  }, []);
+
+  useEffect(function () {
+    dispatch(fetchProjectCategory());
   }, []);
   return (
     <>

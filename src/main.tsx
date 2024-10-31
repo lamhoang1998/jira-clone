@@ -7,11 +7,9 @@ import { store } from "./store.ts";
 import RenderToast from "./components/RenderToast.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <RenderToast>
-        <App />
-      </RenderToast>
-    </Provider>
-  </React.StrictMode>,
+  <Provider store={store}>
+    <RenderToast>
+      <App />
+    </RenderToast>
+  </Provider>,
 );

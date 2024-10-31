@@ -132,6 +132,14 @@ export const updateProject = createAsyncThunk<
       projectDetails,
     );
     dispatch(setCloseModal());
+    dispatch(
+      setToastMessage({
+        toastState: true,
+        toastMessage: "successfully update a project",
+        toastStatus: "SUCCESS",
+      }),
+    );
+
     dispatch(fetchProject());
     return res.data.content;
   } catch (error) {
@@ -183,6 +191,8 @@ export const fetchProjectCategory = createAsyncThunk<
     const res = await fetchWithToken.get<CategoryReturn>(
       "/api/ProjectCategory",
     );
+
+    console.log(res);
     return res.data.content;
   } catch (error) {
     const errorMessage =
@@ -236,13 +246,64 @@ export const createProject = createAsyncThunk<
     dispatch(
       setToastMessage({
         toastState: true,
-        toastMessage: "successfully updated the projects",
+        toastMessage: "successfully updated a project",
         toastStatus: "SUCCESS",
       }),
     );
     return res.data.content;
   } catch (error) {
-    console.log(error);
+    const errorMessage =
+      error instanceof AxiosError
+        ? error.response?.statusText
+        : "Something went wrong";
+
+    const status =
+      error instanceof AxiosError ? error.status : "Something went wrong";
+    const errorObj = { errorMessage: errorMessage, status: status };
+
+    dispatch(
+      setToastMessage({
+        toastState: true,
+        toastMessage: errorMessage as string,
+        toastStatus: "ERROR",
+      }),
+    );
+
+    return rejectWithValue(errorObj as Error);
+  }
+});
+
+//delete project
+
+type DeleteId = number[];
+
+type DeleteReturn = {
+  statusCode: number;
+  message: string;
+  content: DeleteId;
+  dateTime: string;
+};
+
+export const deleteProject = createAsyncThunk<
+  DeleteReturn,
+  number,
+  { rejectValue: Error }
+>("project/delete", async (id, { rejectWithValue, dispatch }) => {
+  try {
+    const res = await fetchWithToken.delete<DeleteReturn>(
+      `/api/Project/deleteProject?projectId=${id}`,
+    );
+    dispatch(
+      setToastMessage({
+        toastState: true,
+        toastMessage: "successfully delete a project",
+        toastStatus: "SUCCESS",
+      }),
+    );
+    dispatch(fetchProject());
+
+    return res.data;
+  } catch (error) {
     const errorMessage =
       error instanceof AxiosError
         ? error.response?.statusText
@@ -335,6 +396,15 @@ const projectSlice = createSlice({
         state.error = null;
       })
       .addCase(createProject.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    builder
+      .addCase(deleteProject.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteProject.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
       });

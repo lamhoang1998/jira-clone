@@ -10,6 +10,7 @@ import { action as registerUser } from "./pages/Register";
 import { action as loginAction } from "./pages/Login";
 
 import { store } from "./store";
+import TaskDetails from "./pages/TaskDetails";
 
 function App() {
   const router = createBrowserRouter([
@@ -29,6 +30,7 @@ function App() {
           path: "create",
           element: <Create />,
         },
+        { path: "task/:id", element: <TaskDetails /> },
         { path: "user", element: <User /> },
       ],
     },

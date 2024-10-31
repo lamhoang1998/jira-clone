@@ -60,7 +60,7 @@ export const fetchMembers = createAsyncThunk<
 });
 
 //add member to the project
-type addMemberContent = {
+type AddMemberContent = {
   projectId: number;
   userId: number;
 };
@@ -68,13 +68,13 @@ type addMemberContent = {
 type AddMembersReturn = {
   statusCode: number;
   message: string;
-  content: addMemberContent[];
+  content: AddMemberContent[];
   dateTime: string;
 };
 
 export const addMember = createAsyncThunk<
   AddMembersReturn,
-  addMemberContent,
+  AddMemberContent,
   { rejectValue: Error }
 >("members/add", async (member, { rejectWithValue, dispatch }) => {
   try {
@@ -83,13 +83,7 @@ export const addMember = createAsyncThunk<
       member,
     );
     dispatch(fetchProject());
-    dispatch(
-      setToastMessage({
-        toastState: true,
-        toastMessage: "successfully added a new member",
-        toastStatus: "SUCCESS",
-      }),
-    );
+
     console.log(res);
 
     return res.data;
@@ -110,6 +104,62 @@ export const addMember = createAsyncThunk<
         toastStatus: "ERROR",
       }),
     );
+    return rejectWithValue(errorObj as Error);
+  }
+});
+
+//delete member
+type RemoveMemberContent = {
+  projectId: number;
+  userId: number;
+};
+
+type RemoveMembersReturn = {
+  statusCode: number;
+  message: string;
+  content: AddMemberContent[];
+  dateTime: string;
+};
+
+export const removeMember = createAsyncThunk<
+  RemoveMembersReturn,
+  RemoveMemberContent,
+  { rejectValue: Error }
+>("members/remove", async (members, { rejectWithValue, dispatch }) => {
+  try {
+    const res = await fetchWithToken.post<RemoveMembersReturn>(
+      "/api/Project/removeUserFromProject",
+      members,
+    );
+
+    dispatch(fetchProject());
+    dispatch(
+      setToastMessage({
+        toastState: true,
+        toastMessage: "successfully deleted a member",
+        toastStatus: "SUCCESS",
+      }),
+    );
+
+    return res.data;
+  } catch (error) {
+    const errorMessage =
+      error instanceof AxiosError
+        ? error.response?.statusText
+        : "Something went wrong";
+
+    const status =
+      error instanceof AxiosError ? error.status : "Something went wrong";
+    const errorObj = { errorMessage: errorMessage, status: status };
+
+    dispatch(
+      setToastMessage({
+        toastState: true,
+        toastMessage: errorObj.errorMessage as string,
+        toastStatus: "ERROR",
+      }),
+    );
+
     return rejectWithValue(errorObj as Error);
   }
 });
@@ -140,6 +190,15 @@ const membersSlice = createSlice({
       .addCase(fetchMembers.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.members = [];
+        state.error = action.payload;
+      });
+
+    builder
+      .addCase(removeMember.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(removeMember.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
         state.error = action.payload;
       });
   },
