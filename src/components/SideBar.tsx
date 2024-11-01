@@ -48,7 +48,7 @@ function SideBar() {
         </div>
         <div className="flex items-center gap-5 border-y-[1.5px] border-gray-200 px-8 py-4">
           <img
-            src="./public/JSW sign-responsive.png"
+            src="../assets/JSW sign-responsive.png"
             alt="jira-logo"
             width={40}
             height={40}

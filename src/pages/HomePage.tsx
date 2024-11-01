@@ -24,7 +24,7 @@ function HomePage() {
       ) : (
         <>
           <header className="max-w-[1200px] mx-auto flex  items-center py-2">
-            <img src="./public/Jira-hompage-logo.png" width={50} height={50} />
+            <img src="../assets/Jira-hompage-logo.png" width={50} height={50} />
             <span className="inline-block text-3xl bold">JIRA</span>
           </header>
           <p className="text-center ">
