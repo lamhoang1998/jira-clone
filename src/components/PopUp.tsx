@@ -3,12 +3,8 @@ import { useAppSelector, useAppDispatch } from "../hooks";
 import { setCloseModal } from "../reducers/popupSlice";
 import { Editor } from "@tinymce/tinymce-react";
 import { useForm, Controller } from "react-hook-form";
-import { useEffect, useState } from "react";
-import {
-  fetchProject,
-  ProjectDetails,
-  updateProject,
-} from "../reducers/projectSlice";
+import { useEffect } from "react";
+import { ProjectDetails, updateProject } from "../reducers/projectSlice";
 
 type ProjectFormData = {
   projectId: number;

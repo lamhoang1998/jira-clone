@@ -11,28 +11,16 @@ import { Space, Table, Tag, Avatar, Popover, Button, AutoComplete } from "antd";
 
 import Loader from "../components/Loader";
 import ErrorMessage from "../components/ErrorMessage";
-import { CloseOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { setOpenModal } from "../reducers/popupSlice";
 import {
   addMember,
   fetchMembers,
   removeMember,
 } from "../reducers/membersSlice";
-import { current } from "@reduxjs/toolkit";
 import { NavLink } from "react-router-dom";
 
 type OnChange = NonNullable<TableProps<ProjectType>["onChange"]>;
-type Filters = Parameters<OnChange>[1];
-
-type GetSingle<T> = T extends (infer U)[] ? U : never;
-type Sorts = GetSingle<Parameters<OnChange>[2]>;
-
-interface DataType {
-  key: string;
-  name: string;
-  age: number;
-  address: string;
-}
 
 type Members = { userId: number; name: string; avatar: string };
 
@@ -56,34 +44,7 @@ function ProjectManagement() {
 
   const [page, setPage] = useState<number>(1);
 
-  const data: DataType[] = [
-    {
-      key: "1",
-      name: "John Brown",
-      age: 32,
-      address: "New York No. 1 Lake Park",
-    },
-    {
-      key: "2",
-      name: "Jim Green",
-      age: 42,
-      address: "London No. 1 Lake Park",
-    },
-    {
-      key: "3",
-      name: "Joe Black",
-      age: 32,
-      address: "Sydney No. 1 Lake Park",
-    },
-    {
-      key: "4",
-      name: "Jim Red",
-      age: 32,
-      address: "London No. 2 Lake Park",
-    },
-  ];
-
-  const handleChange: OnChange = (pagination, filters, sorter) => {
+  const handleChange: OnChange = (pagination) => {
     console.log("pagination", pagination);
     setPage(pagination.current as number);
   };
@@ -95,26 +56,17 @@ function ProjectManagement() {
       title: "Id",
       dataIndex: "id",
       key: "id",
-      // filters: [
-      //   { text: "Joe", value: "Joe" },
-      //   { text: "Jim", value: "Jim" },
-      // ],
-      // filteredValue: filteredInfo.name || null,
-      // onFilter: (value, record) => record.name.includes(value as string),
-      // sorter: (a, b) => a.name.length - b.name.length,
-      // sortOrder: sortedInfo.columnKey === "name" ? sortedInfo.order : null,
-      // ellipsis: true,
     },
     {
       title: "Project Name",
       dataIndex: "projectName",
       key: "projectName",
-      // sorter: (a, b) => a.age - b.age,
-      // sortOrder: sortedInfo.columnKey === "age" ? sortedInfo.order : null,
-      // ellipsis: true,
+
       render: (text, record, index) => {
         return (
-          <NavLink to={`project/${record.id}`}>{record.projectName}</NavLink>
+          <NavLink key={index} to={`project/${record.id}`}>
+            {text}
+          </NavLink>
         );
       },
       sorter: (item2, item1) => {
@@ -126,12 +78,7 @@ function ProjectManagement() {
         return 1;
       },
     },
-    // {
-    //   title: "Description",
-    //   dataIndex: "description",
-    //   key: "description",
 
-    // },
     {
       title: "category",
       dataIndex: "categoryName",
@@ -150,7 +97,11 @@ function ProjectManagement() {
       dataIndex: "creator",
       key: "creator",
       render: (text, record, index) => {
-        return <Tag color="blue">{record.creator?.name}</Tag>;
+        return (
+          <Tag color="blue" key={index}>
+            {text.name || record.creator?.name}
+          </Tag>
+        );
       },
       sorter: (item2, item1) => {
         let creator1 = item1.creator?.name.trim().toLowerCase();
@@ -163,15 +114,16 @@ function ProjectManagement() {
     },
 
     {
-      title: "member",
-      dataIndex: "member",
-      key: "member",
+      title: "members",
+      dataIndex: "members",
+      key: "members",
       render: (text, record, index) => {
-        console.log(record.members);
+        console.log("text", text);
         return (
           <div>
             {record.members?.slice(0.3).map((member) => (
               <Popover
+                key={index}
                 placement="top"
                 title="members"
                 content={() => {
@@ -244,6 +196,7 @@ function ProjectManagement() {
                       return { label: member.name, value: member.userId };
                     })}
                     onSelect={(value, option) => {
+                      console.log("value", value);
                       setMember(option.label);
                       console.log(record.id, option.value);
                       dispatch(
@@ -270,35 +223,38 @@ function ProjectManagement() {
     {
       title: "Action",
       key: "action",
-      render: (text, record, index) => (
-        <Space size="middle">
-          <button
-            className="hover:text-blue-400"
-            onClick={() => {
-              console.log(record);
-              const { categoryName, description, id, projectName } = record;
-              const projectDetails: {
-                id: number;
-                projectName: string;
-                categoryName: string;
-                description: string;
-              } = { id, projectName, categoryName, description };
-              dispatch(setOpenModal());
-              dispatch(getProjectDetails(projectDetails));
-            }}
-          >
-            <EditOutlined />
-          </button>
-          <button
-            className="hover:text-blue-400"
-            onClick={() => {
-              dispatch(deleteProject(record.id));
-            }}
-          >
-            <DeleteOutlined />
-          </button>
-        </Space>
-      ),
+      render: (text, record, index) => {
+        console.log(text);
+        return (
+          <Space size="middle" key={index}>
+            <button
+              className="hover:text-blue-400"
+              onClick={() => {
+                console.log(record);
+                const { categoryName, description, id, projectName } = record;
+                const projectDetails: {
+                  id: number;
+                  projectName: string;
+                  categoryName: string;
+                  description: string;
+                } = { id, projectName, categoryName, description };
+                dispatch(setOpenModal());
+                dispatch(getProjectDetails(projectDetails));
+              }}
+            >
+              <EditOutlined />
+            </button>
+            <button
+              className="hover:text-blue-400"
+              onClick={() => {
+                dispatch(deleteProject(record.id));
+              }}
+            >
+              <DeleteOutlined />
+            </button>
+          </Space>
+        );
+      },
     },
   ];
 

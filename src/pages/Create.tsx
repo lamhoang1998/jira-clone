@@ -7,7 +7,6 @@ import {
   fetchProjectCategory,
   setProjectCreated,
 } from "../reducers/projectSlice";
-import { setToastMessage } from "../reducers/toastSlice";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
 import ErrorMessage from "../components/ErrorMessage";

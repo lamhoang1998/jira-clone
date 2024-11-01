@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { fetchWithToken } from "../services/baseApi";
 import { AxiosError } from "axios";
-import { build } from "vite";
 
 type Error = {
   errorMessage: string;
@@ -35,7 +34,7 @@ export const fetchComment = createAsyncThunk<
   GetCommentState,
   any,
   { rejectValue: Error }
->("comment/fetch", async (taskId, { rejectWithValue, dispatch }) => {
+>("comment/fetch", async (taskId, { rejectWithValue }) => {
   try {
     const res = await fetchWithToken.get<GetCommentReturn>(
       `/api/Comment/getAll?taskId=${taskId}`,

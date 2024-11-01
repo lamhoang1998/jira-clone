@@ -5,7 +5,7 @@ type FormInputProps = {
   defaultValue?: string;
 };
 
-function FormInput({ label, name, type, defaultValue }: FormInputProps) {
+function FormInput({ label, name, type }: FormInputProps) {
   return (
     <div className="mb-2">
       <label htmlFor={name}>{label || name}</label>

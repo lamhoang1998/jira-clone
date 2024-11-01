@@ -2,7 +2,6 @@ import { Link, Outlet } from "react-router-dom";
 import SideBar from "../components/SideBar";
 import NavBar from "../components/NavBar";
 import { useAppSelector } from "../hooks";
-import Login from "./Login";
 
 function HomePage() {
   const userToken = useAppSelector((store) => store.userState.user?.token);

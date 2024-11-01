@@ -74,7 +74,7 @@ export const fetchProjectDetails = createAsyncThunk<
   Details,
   string,
   { rejectValue: Error }
->("details/fetch", async (id, { rejectWithValue, dispatch }) => {
+>("details/fetch", async (id, { rejectWithValue }) => {
   try {
     const res = fetchWithToken.get<DetailReturn>(
       `/api/Project/getProjectDetail?id=${id}`,
