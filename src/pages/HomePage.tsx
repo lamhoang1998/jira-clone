@@ -2,6 +2,7 @@ import { Link, Outlet } from "react-router-dom";
 import SideBar from "../components/SideBar";
 import NavBar from "../components/NavBar";
 import { useAppSelector } from "../hooks";
+import jiraHomepage from "assets/jira-homepage-logo.png";
 
 function HomePage() {
   const userToken = useAppSelector((store) => store.userState.user?.token);
@@ -24,7 +25,7 @@ function HomePage() {
       ) : (
         <>
           <header className="max-w-[1200px] mx-auto flex  items-center py-2">
-            <img src="../assets/Jira-hompage-logo.png" width={50} height={50} />
+            <img src={jiraHomepage} width={50} height={50} />
             <span className="inline-block text-3xl bold">JIRA</span>
           </header>
           <p className="text-center ">
