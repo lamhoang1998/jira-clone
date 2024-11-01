@@ -50,7 +50,7 @@ export const action =
         throw new Error();
       }
       const res = await customFetch.post("/api/Users/signup", data);
-      console.log(res);
+      console.log("register", res);
       const messageSuccess = res.data.message;
       store.dispatch(
         setToastMessage({
@@ -96,12 +96,14 @@ export const action =
 
 function Register() {
   const errors = useActionData() as FormError;
-  console.log(errors);
   return (
-    <section className="h-screen grid place-items-center ">
-      <Card title="Register" className="w-96 text-center">
+    <section className="h-screen grid place-items-center bg-blue-700">
+      <Card
+        title="Register"
+        className="w-96 text-center  bg-blue-400 font-semibold"
+      >
         <Form className="flex flex-col gap-3" method="post" noValidate>
-          <label htmlFor="email" className="text-left">
+          <label htmlFor="email" className="text-left bold">
             email
           </label>
           <input
@@ -113,7 +115,7 @@ function Register() {
           {errors?.email && (
             <span className="text-red-500 text-left">{errors?.email} </span>
           )}
-          <label htmlFor="password" className="text-left">
+          <label htmlFor="password" className="text-left bold">
             password
           </label>
           <input
@@ -125,7 +127,7 @@ function Register() {
           {errors?.password && (
             <span className="text-red-500 text-left">{errors?.password}</span>
           )}
-          <label htmlFor="username" className="text-left">
+          <label htmlFor="username" className="text-left bold">
             name
           </label>
           <input
@@ -137,7 +139,7 @@ function Register() {
           {errors?.name && (
             <span className="text-red-500 text-left">{errors?.name}</span>
           )}
-          <label htmlFor="phone" className="text-left">
+          <label htmlFor="phone" className="text-left bold">
             phone number
           </label>
 

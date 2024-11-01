@@ -1,4 +1,4 @@
-import { Button, Modal } from "antd";
+import { Modal } from "antd";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { setCloseCreateTask } from "../reducers/popupSlice";
 import { useEffect, useState } from "react";
@@ -12,7 +12,6 @@ import Select from "react-select";
 import { Controller, useForm } from "react-hook-form";
 import { fetchMembers } from "../reducers/membersSlice";
 import { Editor } from "@tinymce/tinymce-react";
-import { fetchProjectDetails } from "../reducers/detailsSlice";
 import { fetchProject } from "../reducers/projectSlice";
 
 function CreateTask() {
@@ -74,12 +73,10 @@ function CreateTask() {
   const formDetails = useForm<FormType>();
 
   const {
-    reset,
     handleSubmit,
     register,
     formState: { errors },
     control,
-    getValues,
     watch,
   } = formDetails;
 

@@ -1,20 +1,19 @@
 import {
   CloseOutlined,
   HomeFilled,
+  PoweroffOutlined,
   TeamOutlined,
   ToolFilled,
 } from "@ant-design/icons";
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { setIsSidebarCollapsed } from "../reducers/globalSlice";
+import { setIsSidebarCollapsed } from "../reducers/toggleSlice";
+import { logoutUser } from "../reducers/userSlice";
 
 function SideBar() {
-  const [showProjects, setShowProjects] = useState(true);
-  const [showPriority, setShowPriority] = useState(true);
-
   const isSidebarCollapsed = useAppSelector(
-    (store) => store.globalState.isSidebarCollapsed,
+    (store) => store.toggleState.isSidebarCollapsed,
   );
   console.log("isSidebarCollapsed", isSidebarCollapsed);
 
@@ -23,7 +22,7 @@ function SideBar() {
   const sidebarClassName = `fixed flex flex-col h-[100%] justify-between shadow-xl translation-all duration-300 h-full z-40 overflow-y-auto bg-white w-64 md:w-64  ${isSidebarCollapsed ? `w-0 hidden` : ""}`;
 
   const activeClass =
-    "w-ful relative flex cursor-pointer items-center gap-3 transition-colors hover:bg-gray-100 bg-gray-100 text-white p-2";
+    "w-ful relative flex cursor-pointer items-center gap-3 transition-colors hover:bg-blue-700 bg-blue-500 text-gray-200 p-2";
 
   const normalClass =
     "w-full relative flex cursor-pointer items-center gap-3 transition-colors hover:bg-gray-100 p-2";
@@ -78,6 +77,17 @@ function SideBar() {
             <TeamOutlined /> User
           </NavLink>
         </nav>
+        <div className="mt-auto pb-3 pt-3 flex gap-1 items-center justify-center hover:bg-blue-500">
+          <PoweroffOutlined />
+          <button
+            className=""
+            onClick={() => {
+              dispatch(logoutUser());
+            }}
+          >
+            LOG OUT
+          </button>
+        </div>
       </div>
     </div>
   );

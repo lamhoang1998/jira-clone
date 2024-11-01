@@ -1,12 +1,16 @@
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { MenuOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
-import { setIsSidebarCollapsed } from "../reducers/globalSlice";
+import { setIsSidebarCollapsed } from "../reducers/toggleSlice";
 import { setOpenCreateTask } from "../reducers/popupSlice";
+import { Avatar, Popover } from "antd";
 
 function NavBar() {
   const isSidebarCollapsed = useAppSelector(
-    (store) => store.globalState.isSidebarCollapsed,
+    (store) => store.toggleState.isSidebarCollapsed,
   );
+
+  const userName = useAppSelector((store) => store.userState.userName);
+  console.log("userName", userName);
 
   const dispatch = useAppDispatch();
 
@@ -22,16 +26,21 @@ function NavBar() {
         </button>
       )}
       <div className=" cursor-pointer">
-        <button
-          onClick={() => {
-            dispatch(setOpenCreateTask());
-          }}
-        >
-          <PlusOutlined className="w-8 h-8" />
-        </button>
+        <Popover placement="topLeft" title="create tasks">
+          <button
+            onClick={() => {
+              dispatch(setOpenCreateTask());
+            }}
+          >
+            <PlusOutlined className="w-8 h-8" />
+          </button>
+        </Popover>
         <SearchOutlined className="w-8 h-8" />
       </div>
-      <h2 className="ml-auto">Navbar</h2>
+      <h2 className="ml-auto flex gap-2 items-center">
+        <Avatar>{userName.slice(0, 1).toUpperCase()}</Avatar>
+        {userName.toUpperCase()}
+      </h2>
     </div>
   );
 }

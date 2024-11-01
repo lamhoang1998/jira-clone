@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import globalReducer from "./reducers/globalSlice";
+import toggleReducer from "./reducers/toggleSlice";
 import projectReducer from "./reducers/projectSlice";
 import userReducer from "./reducers/userSlice";
 import toastReducer from "./reducers/toastSlice";
@@ -11,7 +11,7 @@ import commentReducer from "./reducers/commentSlice";
 
 export const store = configureStore({
   reducer: {
-    globalState: globalReducer,
+    toggleState: toggleReducer,
     projectState: projectReducer,
     userState: userReducer,
     toastState: toastReducer,

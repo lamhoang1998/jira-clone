@@ -1,13 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { fetchProjectDetails } from "../reducers/detailsSlice";
-import { LstTask } from "../reducers/detailsSlice";
 import parse from "html-react-parser";
 import {
   ArrowUpOutlined,
   BorderOutlined,
-  FileSearchOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
 import { Avatar } from "antd";

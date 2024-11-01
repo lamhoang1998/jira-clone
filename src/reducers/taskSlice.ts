@@ -29,7 +29,7 @@ export const fetchTaskType = createAsyncThunk<
   TaskTypeState,
   void,
   { rejectValue: Error }
->("task/tasktype", async (_, { rejectWithValue, dispatch }) => {
+>("task/tasktype", async (_, { rejectWithValue }) => {
   try {
     const res = await fetchWithToken.get<TaskTypeReturn>(
       "/api/TaskType/getAll",
@@ -72,7 +72,7 @@ export const fetchPriority = createAsyncThunk<
   PriorityState,
   void,
   { rejectValue: Error }
->("task/priority", async (_, { rejectWithValue, dispatch }) => {
+>("task/priority", async (_, { rejectWithValue }) => {
   try {
     const res = await fetchWithToken.get<PriorityReturn>(
       "/api/Priority/getAll",
@@ -248,7 +248,7 @@ export const fetchTaskDetail = createAsyncThunk<
   TaskDetailContent,
   number,
   { rejectValue: Error }
->("task/taskDetail", async (id, { rejectWithValue, dispatch }) => {
+>("task/taskDetail", async (id, { rejectWithValue }) => {
   try {
     const res =
       fetchWithToken.get<TaskDetailReturn>(`https://jiranew.cybersoft.edu.vn/api/Project/getTaskDetail?taskId=${id}

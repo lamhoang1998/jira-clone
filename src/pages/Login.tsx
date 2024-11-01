@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 import { ReduxStore } from "../store";
 import { customFetch } from "../services/baseApi";
-import { loginUser } from "../reducers/userSlice";
+import { getUserName, loginUser } from "../reducers/userSlice";
 import { setToastMessage } from "../reducers/toastSlice";
 import { AxiosError } from "axios";
 
@@ -41,6 +41,7 @@ export const action =
 
     try {
       const res = await customFetch.post("/api/Users/signin", data);
+      console.log("login", res);
       store.dispatch(
         setToastMessage({
           toastState: true,
@@ -54,6 +55,7 @@ export const action =
           token: res.data.content.accessToken,
         }),
       );
+      store.dispatch(getUserName(res.data.content.name));
       return redirect("/");
     } catch (error) {
       const errorMsg =
@@ -83,10 +85,13 @@ export const action =
 function Login() {
   const errors = useActionData() as FormError;
   return (
-    <section className="h-screen grid place-items-center ">
-      <Card title="Login" className="w-96 text-center">
-        <Form className="flex flex-col gap-3" method="post" noValidate>
-          <label htmlFor="email" className="text-left">
+    <section className="h-screen grid place-items-center bg-blue-700">
+      <Card
+        title="Login"
+        className="w-96 text-center bg-blue-200 font-semibold"
+      >
+        <Form className="flex flex-col gap-3 " method="post" noValidate>
+          <label htmlFor="email" className="text-left bold">
             email
           </label>
           <input
@@ -103,7 +108,7 @@ function Login() {
           {errors?.email && (
             <span className="text-red-500 text-left">{errors?.email}</span>
           )}
-          <label htmlFor="password" className="text-left">
+          <label htmlFor="password" className="text-left bold">
             password
           </label>
           <input

@@ -8,7 +8,7 @@ const initialState: InitialStateTypes = {
   isSidebarCollapsed: false,
 };
 
-export const globalSlice = createSlice({
+export const toggleSlice = createSlice({
   name: "global",
   initialState,
   reducers: {
@@ -18,5 +18,5 @@ export const globalSlice = createSlice({
   },
 });
 
-export const { setIsSidebarCollapsed } = globalSlice.actions;
-export default globalSlice.reducer;
+export const { setIsSidebarCollapsed } = toggleSlice.actions;
+export default toggleSlice.reducer;

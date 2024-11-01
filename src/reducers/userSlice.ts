@@ -7,6 +7,7 @@ export type User = {
 
 export type UserState = {
   user: User | null;
+  userName: string;
 };
 
 function getUserFromLocalStore(): User | null {
@@ -18,6 +19,7 @@ function getUserFromLocalStore(): User | null {
 
 const initialState: UserState = {
   user: getUserFromLocalStore(),
+  userName: "",
 };
 
 const userSlice = createSlice({
@@ -29,6 +31,9 @@ const userSlice = createSlice({
       state.user = user;
       localStorage.setItem("user", JSON.stringify(user));
     },
+    getUserName: (state, action: PayloadAction<string>) => {
+      state.userName = action.payload;
+    },
     logoutUser: (state) => {
       state.user = null;
       localStorage.removeItem("user");
@@ -36,6 +41,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { loginUser, logoutUser } = userSlice.actions;
+export const { loginUser, logoutUser, getUserName } = userSlice.actions;
 
 export default userSlice.reducer;
