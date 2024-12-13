@@ -291,7 +291,12 @@ function CreateTask() {
                 // )}
                 render={({ field }) => {
                   return (
-                    <Select {...field} options={selectOption} isMulti={true} />
+                    <Select
+                      {...field}
+                      options={selectOption}
+                      isMulti={true}
+                      hideSelectedOptions={false}
+                    />
                   );
                 }}
               />
