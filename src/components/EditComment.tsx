@@ -1,15 +1,10 @@
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import {
-  deleteComment,
-  editComment,
-  insertComment,
-} from "../reducers/commentSlice";
+import { deleteComment, editComment } from "../reducers/commentSlice";
 
 function EditComment({ taskId }: { taskId: any }) {
   console.log("taskId", taskId);
 
-  const dispatch = useAppDispatch();
   const comments = useAppSelector((store) => store.commentState.commentContent);
 
   return (

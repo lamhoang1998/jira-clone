@@ -1,5 +1,4 @@
 import { AntdIconProps } from "@ant-design/icons/lib/components/AntdIcon";
-import { useAppDispatch, useAppSelector } from "../hooks";
 import { NavLink } from "react-router-dom";
 
 type SideBarLinkProps = {
@@ -9,18 +8,7 @@ type SideBarLinkProps = {
   isCollapsed: boolean;
 };
 
-function SideBarLink({
-  href,
-  icon: Icon,
-  label,
-  isCollapsed,
-}: SideBarLinkProps) {
-  const isSidebarCollapsed = useAppSelector(
-    (store) => store.globalState.isSidebarCollapsed,
-  );
-
-  const dispatch = useAppDispatch();
-
+function SideBarLink({ href }: SideBarLinkProps) {
   const activeClass =
     "w-ful relative flex cursor-pointer items-center gap-3 transition-colors hover:bg-gray-100 bg-gray-100 text-white";
 

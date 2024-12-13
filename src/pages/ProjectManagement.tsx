@@ -11,28 +11,16 @@ import { Space, Table, Tag, Avatar, Popover, Button, AutoComplete } from "antd";
 
 import Loader from "../components/Loader";
 import ErrorMessage from "../components/ErrorMessage";
-import { CloseOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { setOpenModal } from "../reducers/popupSlice";
 import {
   addMember,
   fetchMembers,
   removeMember,
 } from "../reducers/membersSlice";
-import { current } from "@reduxjs/toolkit";
 import { NavLink } from "react-router-dom";
 
 type OnChange = NonNullable<TableProps<ProjectType>["onChange"]>;
-type Filters = Parameters<OnChange>[1];
-
-type GetSingle<T> = T extends (infer U)[] ? U : never;
-type Sorts = GetSingle<Parameters<OnChange>[2]>;
-
-interface DataType {
-  key: string;
-  name: string;
-  age: number;
-  address: string;
-}
 
 type Members = { userId: number; name: string; avatar: string };
 
@@ -50,40 +38,15 @@ function ProjectManagement() {
   const loading = useAppSelector((store) => store.projectState.loading);
   const error = useAppSelector((store) => store.projectState.error);
   const projects = useAppSelector((store) => store.projectState.contents);
+  console.log("projects", projects);
   const members = useAppSelector((store) => store.membersState.members);
+  console.log("members", members);
 
   const [member, setMember] = useState<string>("");
 
   const [page, setPage] = useState<number>(1);
 
-  const data: DataType[] = [
-    {
-      key: "1",
-      name: "John Brown",
-      age: 32,
-      address: "New York No. 1 Lake Park",
-    },
-    {
-      key: "2",
-      name: "Jim Green",
-      age: 42,
-      address: "London No. 1 Lake Park",
-    },
-    {
-      key: "3",
-      name: "Joe Black",
-      age: 32,
-      address: "Sydney No. 1 Lake Park",
-    },
-    {
-      key: "4",
-      name: "Jim Red",
-      age: 32,
-      address: "London No. 2 Lake Park",
-    },
-  ];
-
-  const handleChange: OnChange = (pagination, filters, sorter) => {
+  const handleChange: OnChange = (pagination) => {
     console.log("pagination", pagination);
     setPage(pagination.current as number);
   };
@@ -95,23 +58,12 @@ function ProjectManagement() {
       title: "Id",
       dataIndex: "id",
       key: "id",
-      // filters: [
-      //   { text: "Joe", value: "Joe" },
-      //   { text: "Jim", value: "Jim" },
-      // ],
-      // filteredValue: filteredInfo.name || null,
-      // onFilter: (value, record) => record.name.includes(value as string),
-      // sorter: (a, b) => a.name.length - b.name.length,
-      // sortOrder: sortedInfo.columnKey === "name" ? sortedInfo.order : null,
-      // ellipsis: true,
     },
     {
       title: "Project Name",
       dataIndex: "projectName",
       key: "projectName",
-      // sorter: (a, b) => a.age - b.age,
-      // sortOrder: sortedInfo.columnKey === "age" ? sortedInfo.order : null,
-      // ellipsis: true,
+
       render: (text, record, index) => {
         return (
           <NavLink to={`project/${record.id}`}>{record.projectName}</NavLink>
@@ -126,12 +78,7 @@ function ProjectManagement() {
         return 1;
       },
     },
-    // {
-    //   title: "Description",
-    //   dataIndex: "description",
-    //   key: "description",
 
-    // },
     {
       title: "category",
       dataIndex: "categoryName",
@@ -147,10 +94,9 @@ function ProjectManagement() {
     },
     {
       title: "creator",
-      dataIndex: "creator",
       key: "creator",
-      render: (text, record, index) => {
-        return <Tag color="blue">{record.creator?.name}</Tag>;
+      render: (record: ProjectType) => {
+        return <Tag color="blue">{record.creator.name}</Tag>;
       },
       sorter: (item2, item1) => {
         let creator1 = item1.creator?.name.trim().toLowerCase();
@@ -163,14 +109,14 @@ function ProjectManagement() {
     },
 
     {
-      title: "member",
-      dataIndex: "member",
-      key: "member",
-      render: (text, record, index) => {
-        console.log(record.members);
+      title: "members",
+      key: "members",
+      render: (record: ProjectType) => {
+        console.log("members", record);
+
         return (
           <div>
-            {record.members?.slice(0.3).map((member) => (
+            {record.members.slice(0.3).map((member) => (
               <Popover
                 placement="top"
                 title="members"

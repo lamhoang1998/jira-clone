@@ -7,7 +7,6 @@ import EditComment from "./EditComment";
 
 function Comment({ taskId }: { taskId: any }) {
   const dispatch = useAppDispatch();
-  const projectDetails = useAppSelector((store) => store.detailsState.details);
   const comments = useAppSelector((store) => store.commentState.commentContent);
   console.log(comments);
 
@@ -25,19 +24,6 @@ function Comment({ taskId }: { taskId: any }) {
   type Comment = {
     comment: string;
   };
-
-  const commentHandle = useForm<Comment>();
-
-  const { register, handleSubmit } = commentHandle;
-
-  const onSubmit = handleSubmit((data) => {
-    console.log(data);
-    const dataSubmit: { taskId: number | undefined; contentComment: string } = {
-      taskId: taskId,
-      contentComment: data.comment,
-    };
-    dispatch(insertComment(dataSubmit));
-  });
 
   const handleComment = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();

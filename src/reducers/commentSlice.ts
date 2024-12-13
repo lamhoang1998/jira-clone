@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { fetchWithToken } from "../services/baseApi";
 import { AxiosError } from "axios";
-import { build } from "vite";
 
 type Error = {
   errorMessage: string;

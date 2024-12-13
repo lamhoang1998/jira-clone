@@ -51,6 +51,7 @@ function Create() {
   const error = useAppSelector((store) => store.projectState.error);
   console.log(error);
   const loading = useAppSelector((store) => store.projectState.loading);
+  console.log("token", localStorage.getItem("user"));
 
   const onSubmit = handleSubmit((data: FormCreate) => {
     let categoryId = 0;
