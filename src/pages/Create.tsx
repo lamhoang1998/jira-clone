@@ -7,7 +7,6 @@ import {
   fetchProjectCategory,
   setProjectCreated,
 } from "../reducers/projectSlice";
-import { setToastMessage } from "../reducers/toastSlice";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
 import ErrorMessage from "../components/ErrorMessage";
@@ -106,7 +105,7 @@ function Create() {
               rules={{ required: "This field is required" }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <Editor
-                  apiKey="w1t07959btha8whcoqneja1m0pxjy5k1p38pv95jt3ywz6l3"
+                  apiKey="uth2qypdziusl6mkj9q6s7jyqc4eaqm41m5ravf5neo2w4b7"
                   initialValue=""
                   init={{
                     height: 200,

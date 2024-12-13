@@ -1,6 +1,5 @@
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { Avatar } from "antd";
-import { useForm } from "react-hook-form";
 import { fetchComment, insertComment } from "../reducers/commentSlice";
 import { useEffect, useState } from "react";
 import EditComment from "./EditComment";
@@ -21,10 +20,6 @@ function Comment({ taskId }: { taskId: any }) {
 
   //handle input
 
-  type Comment = {
-    comment: string;
-  };
-
   const handleComment = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     event.stopPropagation();
@@ -37,10 +32,6 @@ function Comment({ taskId }: { taskId: any }) {
 
   return (
     <>
-      {/* <form
-        className="w-1/2 flex flex-col gap-3 ml-8 mt-4"
-        onSubmit={onSubmit}
-      ></form> */}
       <div className="w-1/2 flex flex-col gap-3 ml-8 mt-4">
         <label
           htmlFor="comment"

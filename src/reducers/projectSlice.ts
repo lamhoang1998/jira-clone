@@ -119,8 +119,6 @@ type ProjectUpdate = {
 
 //send formdata to the api to update projects
 
-const putUrl = "/api/Project/updateProject";
-
 export const updateProject = createAsyncThunk<
   ProjectSentBack,
   ProjectUpdate,

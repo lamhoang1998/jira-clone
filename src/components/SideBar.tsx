@@ -10,6 +10,7 @@ import { NavLink } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { setIsSidebarCollapsed } from "../reducers/toggleSlice";
 import { logoutUser } from "../reducers/userSlice";
+import images from "../utils/image";
 
 function SideBar() {
   const isSidebarCollapsed = useAppSelector(
@@ -48,7 +49,7 @@ function SideBar() {
         </div>
         <div className="flex items-center gap-5 border-y-[1.5px] border-gray-200 px-8 py-4">
           <img
-            src="/public/JSW sign-responsive.png"
+            src={images.jira_sidebar}
             alt="jira-logo"
             width={40}
             height={40}

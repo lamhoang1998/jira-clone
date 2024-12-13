@@ -66,7 +66,9 @@ function ProjectManagement() {
 
       render: (text, record, index) => {
         return (
-          <NavLink to={`project/${record.id}`}>{record.projectName}</NavLink>
+          <NavLink key={index} to={`project/${record.id}`}>
+            {text}
+          </NavLink>
         );
       },
       sorter: (item2, item1) => {
@@ -95,8 +97,8 @@ function ProjectManagement() {
     {
       title: "creator",
       key: "creator",
-      render: (record: ProjectType) => {
-        return <Tag color="blue">{record.creator.name}</Tag>;
+      render: (text, record, index) => {
+        return <Tag color="blue">{record.creator?.name}</Tag>;
       },
       sorter: (item2, item1) => {
         let creator1 = item1.creator?.name.trim().toLowerCase();
@@ -116,8 +118,9 @@ function ProjectManagement() {
 
         return (
           <div>
-            {record.members.slice(0.3).map((member) => (
+            {record.members.slice(0.3).map((member, index) => (
               <Popover
+                key={index}
                 placement="top"
                 title="members"
                 content={() => {
@@ -190,6 +193,7 @@ function ProjectManagement() {
                       return { label: member.name, value: member.userId };
                     })}
                     onSelect={(value, option) => {
+                      console.log("value", value);
                       setMember(option.label);
                       console.log(record.id, option.value);
                       dispatch(
@@ -216,35 +220,38 @@ function ProjectManagement() {
     {
       title: "Action",
       key: "action",
-      render: (text, record, index) => (
-        <Space size="middle">
-          <button
-            className="hover:text-blue-400"
-            onClick={() => {
-              console.log(record);
-              const { categoryName, description, id, projectName } = record;
-              const projectDetails: {
-                id: number;
-                projectName: string;
-                categoryName: string;
-                description: string;
-              } = { id, projectName, categoryName, description };
-              dispatch(setOpenModal());
-              dispatch(getProjectDetails(projectDetails));
-            }}
-          >
-            <EditOutlined />
-          </button>
-          <button
-            className="hover:text-blue-400"
-            onClick={() => {
-              dispatch(deleteProject(record.id));
-            }}
-          >
-            <DeleteOutlined />
-          </button>
-        </Space>
-      ),
+      render: (text, record, index) => {
+        console.log(text);
+        return (
+          <Space size="middle" key={index}>
+            <button
+              className="hover:text-blue-400"
+              onClick={() => {
+                console.log(record);
+                const { categoryName, description, id, projectName } = record;
+                const projectDetails: {
+                  id: number;
+                  projectName: string;
+                  categoryName: string;
+                  description: string;
+                } = { id, projectName, categoryName, description };
+                dispatch(setOpenModal());
+                dispatch(getProjectDetails(projectDetails));
+              }}
+            >
+              <EditOutlined />
+            </button>
+            <button
+              className="hover:text-blue-400"
+              onClick={() => {
+                dispatch(deleteProject(record.id));
+              }}
+            >
+              <DeleteOutlined />
+            </button>
+          </Space>
+        );
+      },
     },
   ];
 
