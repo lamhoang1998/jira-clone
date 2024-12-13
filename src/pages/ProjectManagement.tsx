@@ -97,7 +97,7 @@ function ProjectManagement() {
     {
       title: "creator",
       key: "creator",
-      render: (text, record, index) => {
+      render: (record) => {
         return <Tag color="blue">{record.creator?.name}</Tag>;
       },
       sorter: (item2, item1) => {
