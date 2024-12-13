@@ -2,10 +2,7 @@ import { Link, Outlet } from "react-router-dom";
 import SideBar from "../components/SideBar";
 import NavBar from "../components/NavBar";
 import { useAppSelector } from "../hooks";
-<<<<<<< HEAD
-=======
 import images from "../utils/image";
->>>>>>> 7ca94617e68acc220f141bc659ca6a5c1ba4a475
 
 function HomePage() {
   const userToken = useAppSelector((store) => store.userState.user?.token);
